@@ -1,11 +1,5 @@
 import sys
 
-wrong_part_two = {
-    6675,
-    6844,
-    4406
-}
-
 # Input comes in the form of line break separated L1, R2
 # We parse this into a list of integers, where L is negative and R is positive
 def parse_input() -> list[int]:
