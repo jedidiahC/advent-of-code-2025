@@ -47,7 +47,6 @@ def solve(grid: list[list[str]]):
         if part_one == -1:
             part_one = to_remove
 
-
     return part_one, part_two
 
 def parse_input() -> list[str]:
@@ -60,6 +59,7 @@ def parse_input() -> list[str]:
 
 def main():
     grid = parse_input()
-    print(solve(grid))
+    result = solve(grid)
+    print(result)
 
 main()
