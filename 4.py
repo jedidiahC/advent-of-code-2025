@@ -35,7 +35,6 @@ def solve(grid: list[list[str]]):
     part_one = -1
     part_two = 0
 
-    removed = 0
     while True:
         to_remove, grid = try_remove(grid)
 
