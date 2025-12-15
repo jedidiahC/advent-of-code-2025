@@ -30,10 +30,20 @@ def solve(ranges: list[tuple[int, int]]) -> int:
                 part_two += id
                 continue
 
+            sieve = [x % 2 != 0 for x in range(len(id_str) + 1)]
+
             for i in range(3, len(id_str) + 1):
+                if not sieve[i]: # Not prime
+                    continue
+
                 if is_repeated_x_times(id_str, i):
                     part_two += id
                     break
+
+                # Cross out multiples of i.
+                multiple = i
+                for multiple in range(i, len(id_str), i):
+                    sieve[multiple] = False
 
     return (part_one, part_two)
 
