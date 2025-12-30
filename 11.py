@@ -27,12 +27,13 @@ def solve_part_one(adjacency_list: list[dict[str, list[str]]]):
 
 def solve_part_two(adjacency_list: list[dict[str, list[str]]]):
     source = "svr"
-    found = set()  # this set tracks the nodes encountered along the current path.
+    traversed = {}  # records the number of paths found by a fully explored node.
 
     # Optimization -> remember the number of paths from any given source that
     # 1. Encounter 'dac' and reach 'out'.
     # 2. Encounter 'fft' and reach 'out'.
-    # 3. Encounter both and reach 'out'.
+    # 3. Encounter both and reach 'out'. This only increments when we're on a dac or fft node
+    # 4. Encounter none and reach 'out'
 
     # "aaa": {'dac': 2, 'fft': 5, both: 1}
     # (number of paths from aaa to out that encounter dac is 2 and number of path that encounter fft is 5)
@@ -41,20 +42,34 @@ def solve_part_two(adjacency_list: list[dict[str, list[str]]]):
 
     # DFS
     def traverse(device: str):
-        found.add(device)
-        result = {"dac": 0, "fft": 0, "both": 0}
+        if device in memo:
+            return memo[device]
+
+        result = {"dac": 0, "fft": 0, "both": 0, "out": 0}
 
         # End of path
         if device == "out":
-            found.remove(device)
-            int("dac" in found and "fft" in found)  # Returns 1 if path found.
+            result["out"] = 1
 
         if device in adjacency_list:
             for output in adjacency_list[device]:
-                result += traverse(output)
+                paths_found = traverse(output)
+                result["dac"] += paths_found["dac"]
+                result["fft"] += paths_found["fft"]
+                result["out"] += paths_found["out"]
 
-        found.remove(device)
+                if device == "dac":
+                    result["dac"] += paths_found[
+                        "out"
+                    ]  # The number of paths passing "dac" reaching "out"
+                    result["both"] += paths_found["fft"]
+                elif device == "fft":
+                    result["fft"] += paths_found["out"]
+                    result["both"] += paths_found["dac"]
+                else:
+                    result["both"] += paths_found["both"]
 
+        memo[device] = result
         return result
 
     traverse(source)
